@@ -108,8 +108,9 @@ public abstract class Request {
             if (HTTPConnection.RequestMethod.HEAD.equals(con.getRequestMethod())) {
                 if (is.read() != -1) {
                     throw new IOException("HeadRequest with content!?");
+                } else {
+                    return null;
                 }
-                return null;
             } else {
                 final long contentLength = con.getLongContentLength();
                 final ByteArrayOutputStream bos;
