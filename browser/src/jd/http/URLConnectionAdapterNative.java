@@ -15,7 +15,6 @@ import org.appwork.utils.net.httpconnection.HTTPConnectionUtils.IPVERSION;
 import org.appwork.utils.net.httpconnection.HTTPProxy;
 import org.appwork.utils.net.httpconnection.NativeHTTPConnectionImpl;
 import org.appwork.utils.net.socketconnection.SocketConnection;
-import org.brotli.dec.BrotliInputStream;
 
 public class URLConnectionAdapterNative extends NativeHTTPConnectionImpl implements URLConnectionAdapter {
     private Request request;
@@ -75,7 +74,7 @@ public class URLConnectionAdapterNative extends NativeHTTPConnectionImpl impleme
             if (!this.isContentDecoded()) {
                 final String encoding = this.getHeaderField("Content-Encoding");
                 if ("br".equalsIgnoreCase(encoding)) {
-                    this.convertedInputStream = new BrotliInputStream(this.convertedInputStream);
+                    this.convertedInputStream = new WrappedBrotliInputStream(this.convertedInputStream);
                     this.contentDecoded = true;
                 }
             }

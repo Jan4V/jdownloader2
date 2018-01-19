@@ -11,7 +11,6 @@ import jd.http.requests.PostRequest;
 import org.appwork.utils.net.httpconnection.HTTPProxy;
 import org.appwork.utils.net.httpconnection.HTTPProxyHTTPConnectionImpl;
 import org.appwork.utils.net.socketconnection.SocketConnection;
-import org.brotli.dec.BrotliInputStream;
 
 public class URLConnectionAdapterHTTPProxyImpl extends HTTPProxyHTTPConnectionImpl implements URLConnectionAdapter {
     /** The request. */
@@ -79,7 +78,7 @@ public class URLConnectionAdapterHTTPProxyImpl extends HTTPProxyHTTPConnectionIm
             if (!this.isContentDecoded()) {
                 final String encoding = this.getHeaderField("Content-Encoding");
                 if ("br".equalsIgnoreCase(encoding)) {
-                    this.convertedInputStream = new BrotliInputStream(this.convertedInputStream);
+                    this.convertedInputStream = new WrappedBrotliInputStream(this.convertedInputStream);
                     this.contentDecoded = true;
                 }
             }

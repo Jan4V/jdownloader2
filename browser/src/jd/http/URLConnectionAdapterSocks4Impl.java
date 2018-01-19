@@ -11,7 +11,6 @@ import jd.http.requests.PostRequest;
 import org.appwork.utils.net.httpconnection.HTTPProxy;
 import org.appwork.utils.net.httpconnection.Socks4HTTPConnectionImpl;
 import org.appwork.utils.net.socketconnection.SocketConnection;
-import org.brotli.dec.BrotliInputStream;
 
 /**
  * The Class URLConnectionAdapterSocks4Impl.
@@ -82,7 +81,7 @@ public class URLConnectionAdapterSocks4Impl extends Socks4HTTPConnectionImpl imp
             if (!this.isContentDecoded()) {
                 final String encoding = this.getHeaderField("Content-Encoding");
                 if ("br".equalsIgnoreCase(encoding)) {
-                    this.convertedInputStream = new BrotliInputStream(this.convertedInputStream);
+                    this.convertedInputStream = new WrappedBrotliInputStream(this.convertedInputStream);
                     this.contentDecoded = true;
                 }
             }
