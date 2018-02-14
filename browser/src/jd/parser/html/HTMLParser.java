@@ -1084,8 +1084,6 @@ public class HTMLParser {
             final String originalPath = url.getPath();
             if (originalPath != null) {
                 String path = originalPath;
-                path = HTMLParser.urlReplaceBracketOpen.matcher(path).replaceAll("%28");
-                path = HTMLParser.urlReplaceBracketClose.matcher(path).replaceAll("%29");
                 path = HTMLParser.specialReplacePattern.matcher(path).replaceAll("%27");
                 path = HTMLParser.singleSpacePattern.matcher(path).replaceAll("%20");
                 if (!originalPath.equals(path)) {
@@ -1198,7 +1196,7 @@ public class HTMLParser {
 
     /*
      * return tmplinks.toArray(new String[tmplinks.size()]); }
-     * 
+     *
      * /* parses data for available links and returns a string array which does not contain any duplicates
      */
     public static Collection<String> getHttpLinksIntern(String content, final String baseURLString, HtmlParserResultSet results) {
