@@ -11,6 +11,7 @@ import jd.http.URLConnectionAdapterDirectImpl;
 import jd.http.requests.GetRequest;
 
 import org.appwork.net.protocol.http.HTTPConstants;
+import org.appwork.utils.Hash;
 import org.appwork.utils.StringUtils;
 import org.appwork.utils.encoding.Base64;
 import org.appwork.utils.net.HTTPHeader;
@@ -18,7 +19,7 @@ import org.appwork.utils.net.httpconnection.HTTPConnectionImpl.KEEPALIVE;
 
 public class WebSocketRequest extends GetRequest {
     private final static HTTPHeader SEC_WEBSOCKET_VERSION_HEADER = new HTTPHeader("Sec-WebSocket-Version", "13");
-    private final static String     UPGRADE_VALUE                = "upgrade";
+    private final static String     UPGRADE_VALUE                = "Upgrade";
     private final static HTTPHeader CONNECTION_UPGRADE_HEADER    = new HTTPHeader(HTTPConstants.HEADER_REQUEST_CONNECTION, WebSocketRequest.UPGRADE_VALUE);
     private final static HTTPHeader UPGRADE_HEADER               = new HTTPHeader("Upgrade", "websocket");
     public final static String      WEBSOCKET_ACCEPT_HASH_PREFIX = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
@@ -38,7 +39,7 @@ public class WebSocketRequest extends GetRequest {
 
     protected HTTPHeader getSecWebSocketKeyHeader() {
         if (this.secWebSocketKeyHeader == null) {
-            this.secWebSocketKeyHeader = new HTTPHeader("Sec-WebSocket-Key", Base64.encodeToString(String.valueOf(System.nanoTime()).getBytes(), false));
+            this.secWebSocketKeyHeader = new HTTPHeader("Sec-WebSocket-Key", Base64.encodeToString(Hash.getSHA1(Long.toString(System.nanoTime())).getBytes(), false).substring(0, 24));
         }
         return this.secWebSocketKeyHeader;
     }
