@@ -1299,13 +1299,23 @@ public class Browser {
             throw new IllegalArgumentException("location is null");
         }
         try {
-            return URLHelper.fixPathTraversal(URLHelper.createURL(location.replaceAll(" ", "%20")));
+            if (location.matches("^(https?|ftp)://.+")) {
+                return URLHelper.fixPathTraversal(URLHelper.createURL(location.replaceAll(" ", "%20")));
+            } else {
+                final Request lRequest = this.getRequest();
+                if (lRequest == null) {
+                    throw new IOException("No request available:" + location);
+                } else {
+                    return URLHelper.createURL(URLHelper.parseLocation(lRequest.getURL(), location));
+                }
+            }
         } catch (final MalformedURLException e) {
             final Request lRequest = this.getRequest();
             if (lRequest == null) {
-                throw new IOException("No request available", e);
+                throw new IOException("No request available:" + location, e);
+            } else {
+                return URLHelper.createURL(URLHelper.parseLocation(lRequest.getURL(), location));
             }
-            return URLHelper.createURL(URLHelper.parseLocation(lRequest.getURL(), location));
         }
     }
 
