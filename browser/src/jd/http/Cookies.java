@@ -13,7 +13,6 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 package jd.http;
 
 import java.io.IOException;
@@ -22,13 +21,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Pattern;
 
 import jd.parser.Regex;
 
 import org.appwork.utils.StringUtils;
 
 public class Cookies {
-
     public static Cookies parseSetCookies(final Request request) throws IOException {
         final URLConnectionAdapter httpConnection = request.getHttpConnection();
         final String date = httpConnection.getHeaderField("Date");
@@ -213,6 +212,21 @@ public class Cookies {
 
     public void clear() {
         this.cookies.clear();
+    }
+
+    public static String NOTDELETEDPATTERN = "^(?i)((?!^deleted$).)*$";
+
+    public Cookie get(final String key, final String valuePattern) {
+        final Cookie cookie = this.get(key);
+        if (cookie != null) {
+            if (valuePattern == null || Pattern.compile(valuePattern).matcher(cookie.getValue()).matches()) {
+                return cookie;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     public Cookie get(final String key) {
