@@ -13,21 +13,20 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 package jd.parser.html;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import jd.nutils.encoding.Encoding;
 import jd.parser.Regex;
 
 import org.appwork.utils.StringUtils;
 
 public class InputField {
-
     public static InputField parse(String data) {
         return InputField.parse(data, -1, null);
     }
@@ -49,7 +48,6 @@ public class InputField {
             }
         }
         // no longer have to worry about 'data' with miss matched quotation marks!
-
         // Note: input form correction for 'checked' and 'disabled' fields.
         // 'disabled' can be for any input field type. Can not be changed! Value shouldn't been submitted with form, .:. null value.
         // 'checked' states current value, can can be re-sent with current request. .:. null value.
@@ -57,7 +55,6 @@ public class InputField {
         boolean cbr = false;
         boolean checked = false;
         boolean disabled = false;
-
         ArrayList<String> matches = new ArrayList<String>();
         matches.add("\\s?+type\\s?+=\\s?+\"?(checkbox|radio)?\"");
         matches.add("\\s+(checked)\\s?+");
@@ -74,7 +71,6 @@ public class InputField {
                 cbr = true;
             }
         }
-
         ArrayList<String> input = new ArrayList<String>();
         // end of a " or ' (we corrected above so they are all ") is end of value of key, space before next key name isn't required.
         input.add("[\"']{0,1}\\s*(\\w+)\\s*=\\s*\"(.*?)\"");
@@ -100,27 +96,27 @@ public class InputField {
                 if (match[0].equalsIgnoreCase("type") && type == null) {
                     type = match[1];
                 } else if (match[0].equalsIgnoreCase("name") && key == null) {
-                    key = Encoding.formEncoding(match[1]);
+                    key = InputField.formEncoding(match[1]);
                 } else if (match[0].equalsIgnoreCase("value") && value == null) {
-                    value = Encoding.formEncoding(match[1]);
+                    value = InputField.formEncoding(match[1]);
                     if (cbr) {
                         if (checked) {
                             // ret.put("<INPUTFIELD:CHECKED>", "true");
                         } else {
                             properties.put("<INPUTFIELD:CHECKED>", "false");
-                            properties.put("<INPUTFIELD:TYPEVALUE>", Encoding.formEncoding(match[1]));
-                            value = Encoding.formEncoding(null);
+                            properties.put("<INPUTFIELD:TYPEVALUE>", InputField.formEncoding(match[1]));
+                            value = InputField.formEncoding(null);
                         }
                     }
                     if (!disabled) {
                         // ret.put("CKBOX_RADIO_DISABLED", "false");
                     } else {
                         properties.put("<INPUTFIELD:DISABLED>", "true");
-                        properties.put("<INPUTFIELD:TYPEVALUE>", Encoding.formEncoding(match[1]));
-                        value = Encoding.formEncoding(null);
+                        properties.put("<INPUTFIELD:TYPEVALUE>", InputField.formEncoding(match[1]));
+                        value = InputField.formEncoding(null);
                     }
                 } else {
-                    properties.put(Encoding.formEncoding(match[0]), Encoding.formEncoding(match[1]));
+                    properties.put(InputField.formEncoding(match[0]), InputField.formEncoding(match[1]));
                 }
             }
         }
@@ -131,10 +127,21 @@ public class InputField {
         return ret;
     }
 
+    private static String formEncoding(final String str) {
+        if (str == null) {
+            return null;
+        } else {
+            try {
+                return URLEncoder.encode(str, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                return str;
+            }
+        }
+    }
+
     private String                  key;
     private String                  value      = null;
     private HashMap<String, String> properties = null;
-
     private final String            type;
 
     private void setProperties(HashMap<String, String> properties) {
@@ -252,7 +259,7 @@ public class InputField {
      */
     public boolean containsPropertyKeyValue(final String key, final String value) {
         if (this.properties != null) {
-            if (containsProperty(key) && value.equals(this.properties.get(key))) {
+            if (this.containsProperty(key) && value.equals(this.properties.get(key))) {
                 return true;
             }
         }
