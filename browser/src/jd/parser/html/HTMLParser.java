@@ -611,8 +611,8 @@ public class HTMLParser {
     final private static Pattern                checkPatternHREFUNESCAPESRC = Pattern.compile(".*?(href|unescape|src=).+", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     final private static Pattern                checkPatternHREFSRC         = Pattern.compile(".*?(href|src=).+", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     final private static Pattern                unhexPattern                = Pattern.compile("(([0-9a-fA-F]{2}| )+)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-    final private static Pattern                paramsCut1                  = Pattern.compile("://[^\r\n]*?/[^\r\n]+\\?.[^\r\n]*?=(.*?)($|\r|\n)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-    final private static Pattern                paramsCut2                  = Pattern.compile("://[^\r\n]*?/[^\r\n]*?\\?(.*?)($|\r|\n)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    final private static Pattern                paramsCut1                  = Pattern.compile("://[^\r\n\"' ]*?/[^\r\n\"']+\\?.[^\r\n\"']*?=(.*?)($|\r|\n|\"|')", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    final private static Pattern                paramsCut2                  = Pattern.compile("://[^\r\n\"' ]*?/[^\r\n\"']*?\\?(.*?)($|\r|\n|\"|')", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern                inTagsPattern               = Pattern.compile("<([^<]*?)>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     final private static Pattern                endTagPattern               = Pattern.compile("^(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     final private static Pattern                taglessPattern              = Pattern.compile("^(.*?)$", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -1196,7 +1196,7 @@ public class HTMLParser {
 
     /*
      * return tmplinks.toArray(new String[tmplinks.size()]); }
-     *
+     * 
      * /* parses data for available links and returns a string array which does not contain any duplicates
      */
     public static Collection<String> getHttpLinksIntern(String content, final String baseURLString, HtmlParserResultSet results) {
