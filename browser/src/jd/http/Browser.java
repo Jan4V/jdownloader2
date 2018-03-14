@@ -475,7 +475,7 @@ public class Browser {
     private String                   acceptLanguage   = "de, en-gb;q=0.9, en;q=0.8";
     /*
      * -1 means use default Timeouts
-     *
+     * 
      * 0 means infinite (DO NOT USE if not needed)
      */
     private int                      connectTimeout   = -1;
@@ -938,7 +938,7 @@ public class Browser {
     public void getDownload(final File file, final String urlString) throws IOException {
         URLConnectionAdapter con = null;
         try {
-            con = this.openGetConnection(URLDecoder.decode(urlString, "UTF-8"));
+            con = this.openGetConnection(urlString);
             Browser.download(file, con);
         } finally {
             if (con != null) {
