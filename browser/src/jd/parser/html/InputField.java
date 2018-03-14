@@ -127,6 +127,12 @@ public class InputField {
         return ret;
     }
 
+    /**
+     * always URLEncode form values parsed from html
+     * 
+     * @param str
+     * @return
+     */
     private static String formEncoding(final String str) {
         if (str == null) {
             return null;
